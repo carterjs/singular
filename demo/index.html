@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vector Graphic Demo</title>
+</head>
+<body>
+    <!--Web components polyfill-->
+    <script src="lib/webcomponents-bundle.js"></script>
+    
+    <!--Webpack includes the component-->
+    <a-graphic editor type="svg">
+        <a-rectangle id="test" x="5" y="5" width="100" height="100"></a-rectangle>
+        <a-circle x="40" y="45" radius="30" style="--fill:#ff0000"></a-circle>
+    </a-graphic>
+</body>
+</html>
