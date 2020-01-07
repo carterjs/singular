@@ -1,4 +1,4 @@
-import { render, TemplateResult, html } from "lit-html";
+import { render, TemplateResult, html, SVGTemplateResult } from "lit-html";
 
 interface Styles {
     stroke: string,
@@ -6,57 +6,95 @@ interface Styles {
     fill: string
 };
 
+const defaultStyles = {
+    stroke: "#000000",
+    strokeWidth: 1,
+    fill: "none"
+};
+
 export abstract class AComponent extends HTMLElement {
 
-    constructor() {
-        super();
-        this.attachShadow({mode: "open"});
+    static get observedAttributes() {
+        return [
+            "stroke",
+            "stroke-width",
+            "fill",
+            "name"
+        ];
+    }
+
+    /**
+     * All children that are ```AComponent```s
+     */
+    get components() {
+        return [...this.children].filter((child) => child instanceof AComponent) as AComponent[];
+    }
+
+    /**
+     * Get styles
+     * also gets inherited styles
+     */
+    get styles(): Styles {
+        // Store fallback for inheritence
+        let next;
+        if(this.parentElement instanceof AComponent) {
+            // Fallback is parent (recursive)
+            next = this.parentElement.styles;
+        } else {
+            // Fallback is defaults
+            next = defaultStyles;
+        }
+        const styles = {
+            stroke: this.getAttribute("stroke") || next.stroke,
+            strokeWidth: Number(this.getAttribute("stroke-width")) || Number(next.strokeWidth),
+            fill: this.getAttribute("fill") || next.fill,
+        }
+        return styles;
+    }
+
+    /**
+     * Perform updates when attributes change
+     */
+    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         this.update();
     }
 
-    getStyles(): Styles {
-        const styles = getComputedStyle(this);
-        return {
-            stroke: styles.getPropertyValue("--stroke") || "#000",
-            strokeWidth: Number(styles.getPropertyValue("--stroke-width") || 1),
-            fill: styles.getPropertyValue("--fill") || "none"
-        };
+    /**
+     * Render as an SVG
+     */
+    abstract renderSVG(): SVGTemplateResult;
+
+    /**
+     * Apply styles to the canvas
+     * @param canvas the canvas element - for backgrounds and resolution
+     * @param context the context - for styling
+     */
+    styleCanvas(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): HTMLCanvasElement {
+        // Apply styles
+        const styles = this.styles;
+        context.lineWidth = styles.strokeWidth;
+
+        if(styles.fill != "none") {
+            context.fillStyle = styles.fill;
+            context.fill();
+        }
+        if(styles.stroke != "none") {
+            context.strokeStyle = styles.stroke;
+            context.stroke();
+        }
+        
+        return canvas;
     }
 
-    attributeChangedCallback() {
-        this.update();
-    }
+    /**
+     * Render to canvas
+     */
+    abstract renderCanvas(canvas: HTMLCanvasElement): void;
 
-    renderEditor() {
-        const styles = this.getStyles();
-        const changeStyle = (property: string, value: string) => {
-            this.style.setProperty(property, value);
-            this.update();
-        };
-        return html`
-            <div>
-                <h2>Styles</h2>
-                <label>
-                    Stroke Color
-                    <input type="color" .value=${styles.stroke} @change=${(e: any) => changeStyle("--stroke", e.target.value)} />
-                </label>
-                <label>
-                    Stroke Width
-                    <input type="number" .value=${styles.strokeWidth} @change=${(e: any) => changeStyle("--stroke-width", e.target.value)} />
-                </label>
-                <label>
-                    Fill Color
-                    <input type="color" .value=${styles.fill} @change=${(e: any) => changeStyle("--fill", e.target.value)} />
-                </label>
-            </div>
-        `;
-    }
-
-    abstract renderSVG(): SVGElement;
-    abstract renderCanvas(): HTMLCanvasElement;
-
+    /**
+     * Bubble updates to root
+     */
     update() {
-        render(this.renderEditor(), this.shadowRoot!);
         if(this.parentElement instanceof AComponent) {
             this.parentElement.update();
         }

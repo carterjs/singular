@@ -8,67 +8,86 @@ import "./components";
  */
 class AGraphic extends AComponent {
 
-    graphic?: Element;
+    contentWrapper: HTMLDivElement;
+    canvas: HTMLCanvasElement;
+    canvasScale = window.devicePixelRatio;
 
-    static get observedAttributes() {
+    static get observedAttributes(): string[] {
         return [
+            ...super.observedAttributes,
             "type",
             "editor"
         ];
     }
 
-    /**
-     * All children that are ```AComponent```s
-     */
-    get components() {
-        return [...this.children].filter((child) => child instanceof AComponent) as AComponent[];
+    constructor() {
+        super();
+
+        this.attachShadow({ mode: "open" });
+
+        // Wrapper for primary content
+        this.contentWrapper = document.createElement("div");
+        this.contentWrapper.className = "content";
+        this.shadowRoot!.appendChild(this.contentWrapper);
+
+        // Virtual canvas
+        this.canvas = document.createElement("canvas");
     }
 
-    renderEditor() {
-        return html`
-            ${this.hasAttribute("editor") && this.getAttribute("editor") != "false" ? html`<slot></slot>` : ""}
-            ${this.graphic}
-        `;
+    connectedCallback() {
+        this.sizeCanvas();
+        window.addEventListener("resize", this.sizeCanvas.bind(this));
+    }
+
+    disconnectedCallback() {
+        window.addEventListener("resize", this.sizeCanvas.bind(this));
+    }
+
+    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        if(name == "type" && newValue == "canvas") {
+            this.sizeCanvas();
+        }
+    }
+
+    sizeCanvas() {
+        if(this.hasAttribute("type") && this.getAttribute("type") != "canvas") {
+            return;
+        }
+        const width = this.canvas.clientWidth;
+        const height = this.canvas.clientHeight;
+        this.canvas.width = width * this.canvasScale;
+        this.canvas.height = height * this.canvasScale;
+        this.canvas.style.width = width + "px";
+        this.canvas.style.height = height + "px";
+        this.canvas.getContext("2d")?.scale(this.canvasScale, this.canvasScale);
+        this.update();
     }
 
     renderSVG() {
-        const root = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        this.components.forEach((component) => {
-            root.appendChild(component.renderSVG());
-        });
-        return root;
+        return svg`
+            <svg>
+                ${this.components.map((component) => component.renderSVG())}
+            </svg>
+        `;
     }
 
-    renderCanvas() {
-        const root = document.createElement("canvas");
-        const context = root.getContext("2d");
+    renderCanvas(canvas: HTMLCanvasElement) {
+        const context = canvas.getContext("2d");
+        context?.clearRect(0, 0, canvas.width, canvas.height);
         this.components.forEach((component) => {
-            context?.drawImage(component.renderCanvas(),0,0);
+            component.renderCanvas(canvas);
         });
-        return root;
-    }
-
-    render() {
-        // Only render once ready
-        if(!this.shadowRoot) {
-            return;
-        }
-
-        // React to type
-        let root;
-        if(this.getAttribute("type") == "svg") {
-            root = this.renderSVG();
-        } else {
-            root = this.renderCanvas();
-        }
-
-        this.graphic = root;
     }
 
     update() {
-        this.render();
-        super.update();
-        // this.shadowRoot!.innerHTML = this.graphic!.innerHTML;
+        // Render graphic
+        if(this.hasAttribute("type") && this.getAttribute("type") == "canvas") {
+            this.renderCanvas(this.canvas);
+            render(this.canvas, this.contentWrapper);
+        } else {
+            render(this.renderSVG(), this.contentWrapper);
+        }
     }
 }
 
