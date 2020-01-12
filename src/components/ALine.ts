@@ -4,38 +4,46 @@ import { svg } from "lit-html";
 /**
  * A vector circle
  */
-export class ACircle extends AComponent {
+export class ALine extends AComponent {
 
-    x = 0;
-    y = 0;
-    radius = 0;
+    x1 = 0;
+    y1 = 0;
+    x2 = 0;
+    y2 = 0;
 
     static get observedAttributes() {
         return [
             ...super.observedAttributes,
-            "x",
-            "y",
-            "radius"
+            "x1",
+            "y1",
+            "x2",
+            "y2"
         ];
     }
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
-            case "x":
-            case "y":
-            case "radius":
+            case "x1":
+            case "y1":
+            case "x2":
+            case "y2":
                 this[name] = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
     }
 
+    constructor() {
+        super();
+    }
+
     renderSVG() {
         return svg`
-            <circle 
-                cx=${this.x}
-                cy=${this.y}
-                r=${this.radius}
+            <line 
+                x1=${this.x1}
+                y1=${this.y1}
+                x2=${this.x2}
+                y2=${this.y2}
                 stroke=${this.stroke}
                 stroke-width=${this.strokeWidth}
                 fill=${this.fill}
@@ -44,20 +52,15 @@ export class ACircle extends AComponent {
     }
 
     renderCanvas(context: CanvasRenderingContext2D) {
-        console.log(this.fill);
+
         // Draw rectangle
         context.beginPath();
-        context.arc(
-            Number(this.x),
-            Number(this.y),
-            Number(this.radius),
-            0,
-            2*Math.PI
-        );
+        context.moveTo(this.x1, this.y1);
+        context.lineTo(this.x2, this.y2);
 
         // Apply styles
         this.styleContext(context);
     }
 }
 
-customElements.define("a-circle", ACircle);
+customElements.define("a-line", ALine);

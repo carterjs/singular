@@ -14,9 +14,9 @@ export class AGroup extends AComponent {
         `;
     }
 
-    renderCanvas(canvas: HTMLCanvasElement) {
+    renderCanvas(context: CanvasRenderingContext2D) {
         this.components.forEach((component) => {
-            component.renderCanvas(canvas);
+            component.renderCanvas(context);
         });
     }
 }

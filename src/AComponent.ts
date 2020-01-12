@@ -1,26 +1,80 @@
 import { render, TemplateResult, html, SVGTemplateResult } from "lit-html";
-
-interface Styles {
-    stroke: string,
-    strokeWidth: number,
-    fill: string
-};
-
-const defaultStyles = {
-    stroke: "#000000",
-    strokeWidth: 1,
-    fill: "none"
-};
+import { AGraphic } from ".";
 
 export abstract class AComponent extends HTMLElement {
 
-    static get observedAttributes() {
+ 
+    private inherit(name: string, defaultValue: any) {
+        const local = "_" + name;
+        if(local in this && !!(this as any)[local]) {
+            return (this as any)[local];
+        } else {
+            if(this.parentElement instanceof AComponent) {
+                return (this.parentElement as any)[local];
+            } else {
+                return defaultValue;
+            }
+        }
+    }
+
+    /**
+     * Property for stroke
+     */
+    get stroke(): string {
+        return this.inherit("stroke", "#000");
+    }
+    set stroke(stroke) {
+        this._stroke = stroke;
+        this.update();
+    }
+    _stroke?: string;
+
+    /**
+     * Property for stroke width
+     */
+    get strokeWidth(): number {
+        // return this.inherit("strokeWidth", 1);
+        return this._strokeWidth || (this.parentElement instanceof AComponent ? this.parentElement.strokeWidth : 1);
+    }
+    set strokeWidth(strokeWidth) {
+        this._strokeWidth = strokeWidth;
+        this.update();
+    }
+    _strokeWidth?: number;
+
+    /**
+     * Property for fill
+     */
+    get fill(): string {
+        return this.inherit("fill", "none");
+    }
+    set fill(fill) {
+        this._fill = fill;
+        this.update();
+    }
+    _fill?: string;
+
+    static get observedAttributes(): string[] {
         return [
             "stroke",
-            "stroke-width",
-            "fill",
-            "name"
+            "strokewidth",
+            "fill"
         ];
+    }
+
+    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+        switch(name) {
+            case "stroke":
+                this._stroke = newValue;
+                break;
+            case "strokewidth":
+                this._strokeWidth = Number(newValue);
+                break;
+            case "fill":
+                this._fill = newValue;
+                break;
+        }
+        this.update();
     }
 
     /**
@@ -28,35 +82,6 @@ export abstract class AComponent extends HTMLElement {
      */
     get components() {
         return [...this.children].filter((child) => child instanceof AComponent) as AComponent[];
-    }
-
-    /**
-     * Get styles
-     * also gets inherited styles
-     */
-    get styles(): Styles {
-        // Store fallback for inheritence
-        let next;
-        if(this.parentElement instanceof AComponent) {
-            // Fallback is parent (recursive)
-            next = this.parentElement.styles;
-        } else {
-            // Fallback is defaults
-            next = defaultStyles;
-        }
-        const styles = {
-            stroke: this.getAttribute("stroke") || next.stroke,
-            strokeWidth: Number(this.getAttribute("stroke-width")) || Number(next.strokeWidth),
-            fill: this.getAttribute("fill") || next.fill,
-        }
-        return styles;
-    }
-
-    /**
-     * Perform updates when attributes change
-     */
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-        this.update();
     }
 
     /**
@@ -69,27 +94,24 @@ export abstract class AComponent extends HTMLElement {
      * @param canvas the canvas element - for backgrounds and resolution
      * @param context the context - for styling
      */
-    styleCanvas(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): HTMLCanvasElement {
+    styleContext(context: CanvasRenderingContext2D): void {
         // Apply styles
-        const styles = this.styles;
-        context.lineWidth = styles.strokeWidth;
+        context.lineWidth = this.strokeWidth;
 
-        if(styles.fill != "none") {
-            context.fillStyle = styles.fill;
+        if(this.fill != "none") {
+            context.fillStyle = this.fill;
             context.fill();
         }
-        if(styles.stroke != "none") {
-            context.strokeStyle = styles.stroke;
+        if(this.stroke != "none") {
+            context.strokeStyle = this.stroke;
             context.stroke();
         }
-        
-        return canvas;
     }
 
     /**
      * Render to canvas
      */
-    abstract renderCanvas(canvas: HTMLCanvasElement): void;
+    abstract renderCanvas(context: CanvasRenderingContext2D): void;
 
     /**
      * Bubble updates to root

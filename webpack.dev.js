@@ -13,7 +13,8 @@ module.exports = merge(common, {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./demo/index.html"
+            template: "./demo/index.html",
+            inject: false
         })
     ]
 });

@@ -6,6 +6,11 @@ import { svg } from "lit-html";
  */
 export class ARectangle extends AComponent {
 
+    x = 0;
+    y = 0;
+    width = 0;
+    height = 0;
+
     static get observedAttributes() {
         return [
             ...super.observedAttributes,
@@ -16,38 +21,40 @@ export class ARectangle extends AComponent {
         ];
     }
 
+    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+        switch(name) {
+            case "x":
+            case "y":
+            case "width":
+            case "height":
+                this[name] = Number(newValue);
+        }
+        super.attributeChangedCallback(name, oldValue, newValue);
+    }
+
     renderSVG() {
-        const styles = this.styles;
         return svg`
             <rect
-                x=${this.getAttribute("x")}
-                y=${this.getAttribute("y")}
-                width=${this.getAttribute("width")}
-                height=${this.getAttribute("height")}
-                stroke=${styles.stroke}
-                stroke-width=${styles.strokeWidth}
-                fill=${styles.fill}
+                x=${this.x}
+                y=${this.y}
+                width=${this.width}
+                height=${this.height}
+                stroke=${this.stroke}
             />
         `;
     }
 
-    renderCanvas(canvas: HTMLCanvasElement) {
-        // Get context
-        const context = canvas.getContext("2d");
-        if(!context) {
-            return canvas;
-        }
-
+    renderCanvas(context: CanvasRenderingContext2D) {
         // Draw rectangle
         context.beginPath();
         context.rect(
-            Number(this.getAttribute("x")),
-            Number(this.getAttribute("y")),
-            Number(this.getAttribute("width")),
-            Number(this.getAttribute("height"))
+            this.x,
+            this.y,
+            this.width,
+            this.height
         );
 
-        this.styleCanvas(canvas, context);
+        this.styleContext(context);
     }
 }
 

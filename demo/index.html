@@ -5,19 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vector Graphic Demo</title>
+    <style>
+        html, body {
+            margin: 0;
+        }
+        a-graphic {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
     <!--Web components polyfill-->
     <script src="lib/webcomponents-bundle.js"></script>
-    
-    <!--Webpack includes the component-->
-    <a-graphic type="canvas">
-        <a-rectangle x="0" y="0" width="100" height="100"></a-rectangle>
-        <a-circle x="50" y="50" radius="50"></a-circle>
-        <a-group>
-            <a-circle x="50" y="50" radius="15"></a-circle>
-            <a-circle x="50" y="50" radius="25"></a-circle>
+
+    <!--Include the component-->
+    <script type="module" src="./index.js"></script>
+
+    <a-graphic type="canvas" width="100" height="100" strokewidth="2" stroke="#f00">
+        <!--Head-->
+        <a-circle x="50" y="50" radius="25" strokeWidth="1"></a-circle>
+
+        <!--Eyes-->
+        <a-group stroke="#ff0">
+            <a-circle x="40" y="45" radius="2"></a-circle>
+            <a-circle x="60" y="45" radius="2"></a-circle>
         </a-group>
+
+        <!--Mouth-->
+        <a-line x1="40" y1="60" x2="60" y2="60"></a-line>
     </a-graphic>
 </body>
 </html>
