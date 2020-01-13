@@ -1,18 +1,13 @@
-import { render, TemplateResult, html, SVGTemplateResult } from "lit-html";
-import { AGraphic } from ".";
-
 export abstract class AComponent extends HTMLElement {
 
- 
-    private inherit(name: string, defaultValue: any) {
-        const local = "_" + name;
-        if(local in this && !!(this as any)[local]) {
-            return (this as any)[local];
+    protected inherit<T>(name: string, def: T): T {
+        if(name in this && !!(this as any)["_" + name]) {
+            return (this as any)["_" + name];
         } else {
             if(this.parentElement instanceof AComponent) {
-                return (this.parentElement as any)[local];
+                return this.parentElement.inherit(name, def);
             } else {
-                return defaultValue;
+                return def;
             }
         }
     }
@@ -25,7 +20,7 @@ export abstract class AComponent extends HTMLElement {
     }
     set stroke(stroke) {
         this._stroke = stroke;
-        this.update();
+        this.shouldRender();
     }
     _stroke?: string;
 
@@ -33,12 +28,11 @@ export abstract class AComponent extends HTMLElement {
      * Property for stroke width
      */
     get strokeWidth(): number {
-        // return this.inherit("strokeWidth", 1);
-        return this._strokeWidth || (this.parentElement instanceof AComponent ? this.parentElement.strokeWidth : 1);
+        return this.inherit("strokeWidth", 1);
     }
     set strokeWidth(strokeWidth) {
         this._strokeWidth = strokeWidth;
-        this.update();
+        this.shouldRender();
     }
     _strokeWidth?: number;
 
@@ -50,7 +44,7 @@ export abstract class AComponent extends HTMLElement {
     }
     set fill(fill) {
         this._fill = fill;
-        this.update();
+        this.shouldRender();
     }
     _fill?: string;
 
@@ -65,16 +59,15 @@ export abstract class AComponent extends HTMLElement {
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
             case "stroke":
-                this._stroke = newValue;
+                this.stroke = newValue;
                 break;
             case "strokewidth":
-                this._strokeWidth = Number(newValue);
+                this.strokeWidth = Number(newValue);
                 break;
             case "fill":
-                this._fill = newValue;
+                this.fill = newValue;
                 break;
         }
-        this.update();
     }
 
     /**
@@ -85,40 +78,16 @@ export abstract class AComponent extends HTMLElement {
     }
 
     /**
-     * Render as an SVG
-     */
-    abstract renderSVG(): SVGTemplateResult;
-
-    /**
-     * Apply styles to the canvas
-     * @param canvas the canvas element - for backgrounds and resolution
-     * @param context the context - for styling
-     */
-    styleContext(context: CanvasRenderingContext2D): void {
-        // Apply styles
-        context.lineWidth = this.strokeWidth;
-
-        if(this.fill != "none") {
-            context.fillStyle = this.fill;
-            context.fill();
-        }
-        if(this.stroke != "none") {
-            context.strokeStyle = this.stroke;
-            context.stroke();
-        }
-    }
-
-    /**
      * Render to canvas
      */
-    abstract renderCanvas(context: CanvasRenderingContext2D): void;
+    abstract render(context: CanvasRenderingContext2D): void;
 
     /**
      * Bubble updates to root
      */
-    update() {
+    shouldRender() {
         if(this.parentElement instanceof AComponent) {
-            this.parentElement.update();
+            this.parentElement.shouldRender();
         }
     }
 }

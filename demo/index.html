@@ -22,18 +22,15 @@
     <!--Include the component-->
     <script type="module" src="./index.js"></script>
 
-    <a-graphic type="canvas" width="100" height="100" strokewidth="2" stroke="#f00">
+    <a-graphic width="100" height="100">
         <!--Head-->
-        <a-circle x="50" y="50" radius="25" strokeWidth="1"></a-circle>
+        <a-circle x="50" y="10" radius="10"></a-circle>
+        <a-rectangle x="10" y="10" width="80" height="80"></a-rectangle>
 
-        <!--Eyes-->
-        <a-group stroke="#ff0">
-            <a-circle x="40" y="45" radius="2"></a-circle>
-            <a-circle x="60" y="45" radius="2"></a-circle>
+        <!-- Eyes -->
+        <a-group>
+            <a-circle x="50" y="40" radius="10"></a-circle>
         </a-group>
-
-        <!--Mouth-->
-        <a-line x1="40" y1="60" x2="60" y2="60"></a-line>
     </a-graphic>
 </body>
 </html>

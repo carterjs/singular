@@ -6,9 +6,41 @@ import { svg } from "lit-html";
  */
 export class ACircle extends AComponent {
 
-    x = 0;
-    y = 0;
-    radius = 0;
+    /**
+     * Center x
+     */
+    get x(): number {
+        return this._x;
+    }
+    set x(x) {
+        this._x = x
+        this.shouldRender();
+    }
+    _x = 0;
+
+    /**
+     * Center y
+     */
+    get y() {
+        return this._y;
+    }
+    set y(y) {
+        this._y = y;
+        this.shouldRender();
+    }
+    _y = 0;
+
+    /**
+     * Circle radius
+     */
+    get radius() {
+        return this._radius;
+    }
+    set radius(radius) {
+        this._radius = radius;
+        this.shouldRender();
+    }
+    _radius = 0;
 
     static get observedAttributes() {
         return [
@@ -22,29 +54,18 @@ export class ACircle extends AComponent {
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
             case "x":
+                this.x = Number(newValue);
+                break;
             case "y":
+                this.y = Number(newValue);
             case "radius":
-                this[name] = Number(newValue);
+                this.radius = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
     }
 
-    renderSVG() {
-        return svg`
-            <circle 
-                cx=${this.x}
-                cy=${this.y}
-                r=${this.radius}
-                stroke=${this.stroke}
-                stroke-width=${this.strokeWidth}
-                fill=${this.fill}
-            />
-        `;
-    }
-
-    renderCanvas(context: CanvasRenderingContext2D) {
-        console.log(this.fill);
+    render(context: CanvasRenderingContext2D) {
         // Draw rectangle
         context.beginPath();
         context.arc(
@@ -55,8 +76,17 @@ export class ACircle extends AComponent {
             2*Math.PI
         );
 
+
         // Apply styles
-        this.styleContext(context);
+        if(this.fill != "none") {
+            context.fillStyle = this.fill;
+            context.fill();
+        }
+        if(this.stroke != "none") {
+            context.strokeStyle = this.stroke;
+            context.lineWidth = this.strokeWidth;
+            context.stroke();
+        }
     }
 }
 
