@@ -9,10 +9,6 @@
         html, body {
             margin: 0;
         }
-        a-graphic {
-            width: 100%;
-            height: 100vh;
-        }
     </style>
 </head>
 <body>
@@ -22,14 +18,13 @@
     <!--Include the component-->
     <script type="module" src="./index.js"></script>
 
-    <a-graphic width="100" height="100">
+    <a-graphic space="10x10">
         <!--Head-->
-        <a-circle x="50" y="10" radius="10"></a-circle>
-        <a-rectangle x="10" y="10" width="80" height="80"></a-rectangle>
-
-        <!-- Eyes -->
-        <a-group>
-            <a-circle x="50" y="40" radius="10"></a-circle>
+        <a-rectangle x="0" y="0" width="10" height="10" stroke="#000" fill="rgb(240,220,0)"></a-rectangle>
+        <a-rectangle x="2.5" y="2.5" width="5" height="5" stroke="#f00"></a-rectangle>
+        <a-group stroke="#00f" strokeWidth="0.5"> 
+            <a-line x1="3.5" y1="5" x2="6.5" y2="5"></a-line>
+            <a-line x1="5" y1="3.5" x2="5" y2="6.5"></a-line>
         </a-group>
     </a-graphic>
 </body>

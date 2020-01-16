@@ -14,7 +14,7 @@ export class ARectangle extends AComponent {
     }
     set x(x) {
         this._x = x;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _x = 0;
 
@@ -26,7 +26,7 @@ export class ARectangle extends AComponent {
     }
     set y(y) {
         this._y = y;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _y = 0;
 
@@ -38,7 +38,7 @@ export class ARectangle extends AComponent {
     }
     set width(width) {
         this._width = width;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _width = 0;
 
@@ -50,7 +50,7 @@ export class ARectangle extends AComponent {
     }
     set height(height) {
         this._height = height;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _height = 0;
 
@@ -93,7 +93,7 @@ export class ARectangle extends AComponent {
             this.height
         );
 
-        context.stroke();
+        this.renderWithStyles(context);
     }
 }
 

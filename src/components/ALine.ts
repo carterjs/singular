@@ -14,7 +14,7 @@ export class ALine extends AComponent {
     }
     set x1(x1) {
         this._x1 = x1;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _x1 = 0;
 
@@ -26,7 +26,7 @@ export class ALine extends AComponent {
     }
     set y1(y1) {
         this._y1 = y1;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _y1 = 0;
 
@@ -38,7 +38,7 @@ export class ALine extends AComponent {
     }
     set x2(x2) {
         this._x2 = x2;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _x2 = 0;
     
@@ -46,11 +46,11 @@ export class ALine extends AComponent {
      * End point y
      */
     get y2() {
-        return this._x2;
+        return this._y2;
     }
     set y2(y2) {
         this._y2 = y2;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _y2 = 0;
 
@@ -83,18 +83,12 @@ export class ALine extends AComponent {
     }
 
     render(context: CanvasRenderingContext2D) {
-
         // Draw rectangle
         context.beginPath();
         context.moveTo(this.x1, this.y1);
         context.lineTo(this.x2, this.y2);
 
-        // Apply styles
-        if(this.stroke != "none") {
-            context.strokeStyle = this.stroke;
-            context.lineWidth = this.strokeWidth;
-            context.stroke();
-        }
+        this.renderWithStyles(context, false);
     }
 }
 

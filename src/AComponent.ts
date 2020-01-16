@@ -1,11 +1,13 @@
 export abstract class AComponent extends HTMLElement {
 
-    protected inherit<T>(name: string, def: T): T {
+    protected canvas?: HTMLCanvasElement;
+
+    protected inherit<T, K>(name: string, def: T, type = AComponent): T {
         if(name in this && !!(this as any)["_" + name]) {
             return (this as any)["_" + name];
         } else {
-            if(this.parentElement instanceof AComponent) {
-                return this.parentElement.inherit(name, def);
+            if(this.parentElement instanceof type) {
+                return this.parentElement.inherit(name, def, type);
             } else {
                 return def;
             }
@@ -78,16 +80,32 @@ export abstract class AComponent extends HTMLElement {
     }
 
     /**
+     * Bubble updates to root
+     */
+    shouldRender(canvas?: HTMLCanvasElement) {
+        if(!!this.canvas && this.parentElement instanceof AComponent) {
+            this.parentElement.shouldRender(canvas);
+        }
+    }
+
+    /**
      * Render to canvas
      */
     abstract render(context: CanvasRenderingContext2D): void;
 
     /**
-     * Bubble updates to root
+     * 
+     * @param context The rendering context to finish up
      */
-    shouldRender() {
-        if(this.parentElement instanceof AComponent) {
-            this.parentElement.shouldRender();
+    renderWithStyles(context: CanvasRenderingContext2D, fill = true, stroke = true) {
+        if(fill && this.fill != "none") {
+            context.fillStyle = this.fill;
+            context.fill();
+        }
+        if(stroke && this.stroke != "none") {
+            context.strokeStyle = this.stroke;
+            context.lineWidth = this.strokeWidth;
+            context.stroke();
         }
     }
 }

@@ -14,7 +14,7 @@ export class ACircle extends AComponent {
     }
     set x(x) {
         this._x = x
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _x = 0;
 
@@ -26,7 +26,7 @@ export class ACircle extends AComponent {
     }
     set y(y) {
         this._y = y;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _y = 0;
 
@@ -38,7 +38,7 @@ export class ACircle extends AComponent {
     }
     set radius(radius) {
         this._radius = radius;
-        this.shouldRender();
+        this.shouldRender(this.canvas);
     }
     _radius = 0;
 
@@ -76,17 +76,7 @@ export class ACircle extends AComponent {
             2*Math.PI
         );
 
-
-        // Apply styles
-        if(this.fill != "none") {
-            context.fillStyle = this.fill;
-            context.fill();
-        }
-        if(this.stroke != "none") {
-            context.strokeStyle = this.stroke;
-            context.lineWidth = this.strokeWidth;
-            context.stroke();
-        }
+        this.renderWithStyles(context);
     }
 }
 
