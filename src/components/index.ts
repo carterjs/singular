@@ -1,4 +1,6 @@
-export { AGroup } from "./AGroup";
-export { ARectangle } from "./ARectangle";
-export { ACircle } from "./ACircle";
-export { ALine } from "./ALine";
+export { Group } from "./Group";
+export { Rectangle } from "./Rectangle";
+export { Circle } from "./Circle";
+export { Line } from "./Line";
+export { Path } from "./Path";
+export { Point } from "./Point";

@@ -1,12 +1,11 @@
 import { render, svg } from "lit-html";
-import { ARoot } from "./ARoot";
+import { Root } from "./Root";
 
 import "./components";
-
 /**
  * A custom element for vector graphics
  */
-export class AGraphic extends ARoot {
+export class AGraphic extends Root {
 
     /**
      * A wrapper for the svg or canvas element.
