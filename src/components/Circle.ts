@@ -13,7 +13,7 @@ export class Circle extends Component {
     }
     set radius(radius) {
         this._radius = radius;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _radius: number;
 
@@ -32,7 +32,7 @@ export class Circle extends Component {
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
             case "radius":
-                this._radius = Number(newValue);
+                this.radius = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);

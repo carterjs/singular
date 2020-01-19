@@ -11,13 +11,13 @@ export class Path extends Component {
     }
     set points(points) {
         this._points = points;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _points: {x: number, y: number}[] = [];
 
     addPoint(x: number, y: number) {
         this.points.push({x, y});
-        this.shouldRender();
+        this.shouldRender = true;
     }
 
     constructor() {

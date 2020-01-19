@@ -13,7 +13,7 @@ export class Line extends Component {
     }
     set x1(x1) {
         this._x1 = x1;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _x1: number;
 
@@ -25,7 +25,7 @@ export class Line extends Component {
     }
     set y1(y1) {
         this._y1 = y1;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _y1: number;
 
@@ -37,7 +37,7 @@ export class Line extends Component {
     }
     set x2(x2) {
         this._x2 = x2;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _x2: number;
     
@@ -49,7 +49,7 @@ export class Line extends Component {
     }
     set y2(y2) {
         this._y2 = y2;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _y2: number;
 

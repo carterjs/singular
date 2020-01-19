@@ -112,7 +112,6 @@ export class Root extends Component {
 
     connectedCallback() {
         this.update();
-        super.connectedCallback();
     }
 
     size() {
@@ -138,10 +137,14 @@ export class Root extends Component {
         this.context.scale(scale, scale);
 
         // Re-draw
-        this.shouldRender();
+        this.shouldRender = true;
     }
 
     update() {
+        if(this.shouldRender) {
+            this.render(this.context);
+            this.shouldRender = false;
+        }
         this.size();
         window.requestAnimationFrame(this.update.bind(this));
     }
@@ -150,10 +153,5 @@ export class Root extends Component {
         this.getChildren().forEach((component) => {
             component.render(context);
         });        
-    }
-
-    shouldRender() {
-        this.render(this.context);
-        super.shouldRender();
     }
 }

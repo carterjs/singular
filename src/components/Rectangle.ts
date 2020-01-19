@@ -12,7 +12,7 @@ export class Rectangle extends Component {
     }
     set width(width) {
         this._width = width;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _width = 0;
 
@@ -24,7 +24,7 @@ export class Rectangle extends Component {
     }
     set height(height) {
         this._height = height;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _height = 0;
 

@@ -1,7 +1,17 @@
 import { Root } from "./Root";
 
 export abstract class Component extends HTMLElement {
-    protected ready = false;
+    get shouldRender() {
+        return this._shouldRender;
+    }
+    set shouldRender(shouldRender) {
+        // Bubble up to parents
+        if(shouldRender && this.parentElement instanceof Component) {
+            this.parentElement.shouldRender = shouldRender;
+        }
+        this._shouldRender = shouldRender;
+    }
+    _shouldRender = true;
     /**
      * X translation
      */
@@ -10,7 +20,7 @@ export abstract class Component extends HTMLElement {
     }
     set x(x) {
         this._x = x;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _x?: number;
 
@@ -22,7 +32,7 @@ export abstract class Component extends HTMLElement {
     }
     set y(y) {
         this._y = y;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _y?: number;
 
@@ -34,7 +44,7 @@ export abstract class Component extends HTMLElement {
     }
     set scale(scale) {
         this._scale = scale;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _scale?: number;
 
@@ -46,7 +56,7 @@ export abstract class Component extends HTMLElement {
     }
     set rotate(rotate) {
         this._rotate = rotate;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _rotate?: number;
 
@@ -58,7 +68,7 @@ export abstract class Component extends HTMLElement {
     }
     set pivotX(pivotX) {
         this._pivotX = pivotX;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _pivotX?: number;
 
@@ -70,7 +80,7 @@ export abstract class Component extends HTMLElement {
     }
     set pivotY(pivotY) {
         this._pivotY = pivotY;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _pivotY?: number;
 
@@ -82,7 +92,7 @@ export abstract class Component extends HTMLElement {
     }
     set opacity(opacity) {
         this._opacity = opacity;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _opacity?: number;
 
@@ -94,7 +104,7 @@ export abstract class Component extends HTMLElement {
     }
     set smooth(smooth) {
         this._smooth = smooth;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _smooth?: boolean;
 
@@ -106,7 +116,7 @@ export abstract class Component extends HTMLElement {
     }
     set stroke(stroke) {
         this._stroke = stroke;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _stroke?: string;
 
@@ -118,7 +128,7 @@ export abstract class Component extends HTMLElement {
     }
     set strokeWidth(strokeWidth) {
         this._strokeWidth = strokeWidth;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _strokeWidth?: number;
 
@@ -130,7 +140,7 @@ export abstract class Component extends HTMLElement {
     }
     set fill(fill) {
         this._fill = fill;
-        this.shouldRender();
+        this.shouldRender = true;
     }
     _fill?: string;
 
@@ -188,10 +198,6 @@ export abstract class Component extends HTMLElement {
         }
     }
 
-    connectedCallback() {
-        this.ready = true;
-    }
-
     /**
      * Inherit a property from parents of a certain type.
      * Works when using getters and setters with an underscored prop
@@ -219,18 +225,6 @@ export abstract class Component extends HTMLElement {
     }
 
     /**
-     * Bubble updates to root
-     */
-    shouldRender() {
-        if(!this.ready) {
-            return;
-        }
-        if(this.parentElement instanceof Component) {
-            this.parentElement.shouldRender();
-        }
-    }
-
-    /**
      * Render to canvas
      */
     abstract render(context: CanvasRenderingContext2D): void;
@@ -243,16 +237,15 @@ export abstract class Component extends HTMLElement {
         // Don't impact context state
         context.save();
 
+        // Apply scale and translation transformations
         context.transform(this.scale, 0, 0, this.scale, this.x, this.y);
 
-
-        // context.translate(-10, -10);
+        // Rotate at pivot
         context.translate(this.pivotX, this.pivotY);
         context.rotate(this.rotate * Math.PI / 180);
         context.translate(-this.pivotX, -this.pivotY);
-        // context.translate(this.pivotX, this.pivotY);
 
-
+        // Execute nested operations
         body();
 
         context.globalAlpha = this.opacity;

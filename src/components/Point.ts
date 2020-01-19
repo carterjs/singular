@@ -5,7 +5,7 @@ import { Component } from "../Component";
  */
 export class Point extends Component {
     render(context: CanvasRenderingContext2D) {
-        // Draw rectangle
+        // Do nothing
     }
 }
 

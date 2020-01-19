@@ -37,6 +37,7 @@ export class AGraphic extends Root {
                     position: relative;
                 }
                 canvas {
+                    transition: all 250ms ease-in-out;
                     display: block;
                     position: absolute;
                     top: 50%;
@@ -58,16 +59,13 @@ export class AGraphic extends Root {
         this.realWidth = this.clientWidth;
         this.realHeight = this.clientHeight;
         super.update();
+        render(this.canvas, this.contentWrapper);
     }
 
     render(context: CanvasRenderingContext2D) {
+        console.log("Root render");
         this.context.clearRect(0, 0, this.width, this.height);
         super.render(context);
-    }
-
-    shouldRender() {
-        this.render(this.context);
-        render(this.canvas, this.contentWrapper);
     }
 }
 
