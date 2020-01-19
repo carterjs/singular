@@ -1,9 +1,9 @@
-import { Component } from "../Component";
+import { VisibleComponent } from "../VisibleComponent";
 
 /**
  * A vector line
  */
-export class Line extends Component {
+export class Line extends VisibleComponent {
 
     /**
      * Start point x
@@ -15,7 +15,7 @@ export class Line extends Component {
         this._x1 = x1;
         this.shouldRender = true;
     }
-    _x1: number;
+    _x1 = 0;
 
     /**
      * Start point y
@@ -27,7 +27,7 @@ export class Line extends Component {
         this._y1 = y1;
         this.shouldRender = true;
     }
-    _y1: number;
+    _y1 = 0;
 
     /**
      * End point x
@@ -39,7 +39,7 @@ export class Line extends Component {
         this._x2 = x2;
         this.shouldRender = true;
     }
-    _x2: number;
+    _x2 = 0;
     
     /**
      * End point y
@@ -51,15 +51,7 @@ export class Line extends Component {
         this._y2 = y2;
         this.shouldRender = true;
     }
-    _y2: number;
-
-    constructor(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-        super();
-        this._x1 = x1;
-        this._y1 = y1;
-        this._x2 = x2;
-        this._y2 = y2;
-    }
+    _y2 = 0;
 
     static get observedAttributes() {
         return [
@@ -74,16 +66,10 @@ export class Line extends Component {
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
             case "x1":
-                this.x1 = Number(newValue);
-                break;
             case "y1":
-                this.y1 = Number(newValue);
-                break;
             case "x2":
-                this.x2 = Number(newValue);
-                break;
             case "y2":
-                this.y2 = Number(newValue);
+                this[name] = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
@@ -91,7 +77,7 @@ export class Line extends Component {
 
     render(context: CanvasRenderingContext2D) {
         this.renderWithStyles(context, () => {
-            // Draw rectangle
+            // Draw line between points
             context.beginPath();
             context.moveTo(this.x1, this.y1);
             context.lineTo(this.x2, this.y2);

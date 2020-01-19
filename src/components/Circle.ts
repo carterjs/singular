@@ -1,9 +1,9 @@
-import { Component } from "../Component";
+import { VisibleComponent } from "../VisibleComponent";
 
 /**
  * A vector circle
  */
-export class Circle extends Component {
+export class Circle extends VisibleComponent {
 
     /**
      * Circle radius
@@ -15,12 +15,7 @@ export class Circle extends Component {
         this._radius = radius;
         this.shouldRender = true;
     }
-    _radius: number;
-
-    constructor(x = 0, y = 0, radius = 0) {
-        super();
-        this._radius = radius;
-    }
+    _radius?: number;
 
     static get observedAttributes() {
         return [
@@ -40,7 +35,7 @@ export class Circle extends Component {
 
     render(context: CanvasRenderingContext2D) {
         this.renderWithStyles(context, () => {
-            // Draw rectangle
+            // Draw at 0 - translation handles positioning
             context.beginPath();
             context.arc(
                 0,

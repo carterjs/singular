@@ -1,9 +1,9 @@
-import { Component } from "../Component";
+import { VisibleComponent } from "../VisibleComponent";
 
 /**
  * A vector rectangle
  */
-export class Rectangle extends Component {
+export class Rectangle extends VisibleComponent {
     /**
      * Rectangle width
      */
@@ -40,10 +40,8 @@ export class Rectangle extends Component {
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
             case "width":
-                this.width = Number(newValue);
-                break;
             case "height":
-                this.height = Number(newValue);
+                this[name] = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);

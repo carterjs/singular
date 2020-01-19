@@ -1,9 +1,9 @@
-import { Component } from "./Component";
+import { VisibleComponent } from "./VisibleComponent";
 
 /**
- * A custom element for vector graphics
+ * A wrapper for components
  */
-export class Root extends Component {
+export class Group extends VisibleComponent {
     /**
      * The canvas.
      * Stored to prevent unnecessary resizing
@@ -20,7 +20,7 @@ export class Root extends Component {
      * The width of the virtual space
      */
     get width(): number {
-        return this.inherit("width", 100, Root);
+        return this.inherit("width", 100, Group);
     }
     set width(width) {
         this._width = width;
@@ -32,7 +32,7 @@ export class Root extends Component {
      * The height of the virtual space
      */
     get height() {
-        return this.inherit("height", 100, Root);
+        return this.inherit("height", 100, Group);
     }
     set height(height) {
         this._height = height;
@@ -44,7 +44,7 @@ export class Root extends Component {
      * The actual width of the canvas
      */
     get realWidth() {
-        return this.inherit("realWidth", 100, Root);
+        return this.inherit("realWidth", 100, Group);
     }
     set realWidth(realWidth) {
         this._realWidth = realWidth;
@@ -56,7 +56,7 @@ export class Root extends Component {
      * The height of the virtual space
      */
     get realHeight() {
-        return this.inherit("realHeight", 100, Root);
+        return this.inherit("realHeight", 100, Group);
     }
     set realHeight(realHeight) {
         this._realHeight = realHeight;
@@ -68,7 +68,7 @@ export class Root extends Component {
      * The rendering quality
      */
     get quality() {
-        return this.inherit("quality", window.devicePixelRatio, Root);
+        return this.inherit("quality", window.devicePixelRatio, Group);
     }
     set quality(quality) {
         this._quality = quality;
@@ -141,17 +141,27 @@ export class Root extends Component {
     }
 
     update() {
+        this.size();
         if(this.shouldRender) {
             this.render(this.context);
             this.shouldRender = false;
         }
-        this.size();
         window.requestAnimationFrame(this.update.bind(this));
     }
 
     render(context: CanvasRenderingContext2D) {
-        this.getChildren().forEach((component) => {
-            component.render(context);
-        });        
+        if(context == this.context) {
+            // Render children only on self calls
+            context.clearRect(0, 0, this.width, this.height);
+            this.getChildren().forEach((component) => {
+                component.render(context);
+            });
+        } else {
+            // Simply use saved state for parent calls
+            context.drawImage(this.canvas, 0, 0, this.width, this.height);
+        }
+        
     }
 }
+
+customElements.define("a-group", Group);

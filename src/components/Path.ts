@@ -1,10 +1,10 @@
-import { Component } from "../Component";
+import { VisibleComponent } from "../VisibleComponent";
 import { Point } from "./Point";
 
 /**
  * A vector path
  */
-export class Path extends Component {
+export class Path extends VisibleComponent {
     
     get points() {
         return this._points;
@@ -23,6 +23,7 @@ export class Path extends Component {
     constructor() {
         super();
 
+        // Get all points to start
         this.points = this.getChildren(Point).map((point) => {
             return {x: point.x, y: point.y};
         }) as {x: number, y: number}[];
@@ -41,6 +42,8 @@ export class Path extends Component {
                     context.lineTo(point.x, point.y);
                 }
             });
+
+            console.log(this.points);
         });
     }
 }

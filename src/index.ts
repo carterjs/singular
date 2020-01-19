@@ -1,11 +1,13 @@
-import { render, svg } from "lit-html";
-import { Root } from "./Root";
+import { Group } from "./Group";
+import { render } from "lit-html";
 
+// Register components
 import "./components";
+
 /**
  * A custom element for vector graphics
  */
-export class AGraphic extends Root {
+export class AGraphic extends Group {
 
     /**
      * A wrapper for the svg or canvas element.
@@ -54,18 +56,16 @@ export class AGraphic extends Root {
         this.shadowRoot!.appendChild(this.contentWrapper);
     }
 
+    connectedCallback()  {
+        this.update();
+    }
+
     update() {
         // Sizing
         this.realWidth = this.clientWidth;
         this.realHeight = this.clientHeight;
         super.update();
         render(this.canvas, this.contentWrapper);
-    }
-
-    render(context: CanvasRenderingContext2D) {
-        console.log("Root render");
-        this.context.clearRect(0, 0, this.width, this.height);
-        super.render(context);
     }
 }
 
