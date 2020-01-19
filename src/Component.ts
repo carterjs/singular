@@ -1,27 +1,78 @@
 import { Root } from "./Root";
 
 export abstract class Component extends HTMLElement {
-
-    protected canvas?: HTMLCanvasElement;
+    protected ready = false;
+    /**
+     * X translation
+     */
+    get x(): number {
+        return this.inherit("x", 0);
+    }
+    set x(x) {
+        this._x = x;
+        this.shouldRender();
+    }
+    _x?: number;
 
     /**
-     * Inherit a property from parents of a certain type.
-     * Works when using getters and setters with an underscored prop
-     * @param name the name of the property
-     * @param def the default (fallback) value
-     * @param type the type to inherit from
+     * Y translation
      */
-    protected inherit<T, K>(name: string, def: T, type = Component): T {
-        if(name in this && !!(this as any)["_" + name]) {
-            return (this as any)["_" + name];
-        } else {
-            if(this.parentElement instanceof type) {
-                return this.parentElement.inherit(name, def, type);
-            } else {
-                return def;
-            }
-        }
+    get y(): number {
+        return this.inherit("y", 0);
     }
+    set y(y) {
+        this._y = y;
+        this.shouldRender();
+    }
+    _y?: number;
+
+    /**
+     * Scale
+     */
+    get scale(): number {
+        return this.inherit("scale", 1);
+    }
+    set scale(scale) {
+        this._scale = scale;
+        this.shouldRender();
+    }
+    _scale?: number;
+
+    /**
+     * Rotate
+     */
+    get rotate(): number {
+        return this.inherit("rotate", 0);
+    }
+    set rotate(rotate) {
+        this._rotate = rotate;
+        this.shouldRender();
+    }
+    _rotate?: number;
+
+    /**
+     * X transform origin
+     */
+    get pivotX(): number {
+        return this.inherit("pivotX", 0);
+    }
+    set pivotX(pivotX) {
+        this._pivotX = pivotX;
+        this.shouldRender();
+    }
+    _pivotX?: number;
+
+    /**
+     * Y transform origin
+     */
+    get pivotY(): number {
+        return this.inherit("pivotY", 0);
+    }
+    set pivotY(pivotY) {
+        this._pivotY = pivotY;
+        this.shouldRender();
+    }
+    _pivotY?: number;
 
     /**
      * Opacity for component
@@ -46,30 +97,6 @@ export abstract class Component extends HTMLElement {
         this.shouldRender();
     }
     _smooth?: boolean;
-
-    /**
-     * X translation
-     */
-    get x(): boolean {
-        return this.inherit("x", true, Root);
-    }
-    set x(x) {
-        this._x = x;
-        this.shouldRender();
-    }
-    _x?: boolean;
-
-    /**
-     * Y translation
-     */
-    get y(): boolean {
-        return this.inherit("y", true, Root);
-    }
-    set y(y) {
-        this._y = y;
-        this.shouldRender();
-    }
-    _y?: boolean;
 
     /**
      * Property for stroke
@@ -109,6 +136,12 @@ export abstract class Component extends HTMLElement {
 
     static get observedAttributes(): string[] {
         return [
+            "x",
+            "y",
+            "scale",
+            "rotate",
+            "pivotx",
+            "pivoty",
             "opacity",
             "smooth",
             "stroke",
@@ -119,11 +152,29 @@ export abstract class Component extends HTMLElement {
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
+            case "x":
+                this.x = Number(newValue);
+                break;
+            case "y":
+                this.y = Number(newValue);
+                break;
+            case "scale":
+                this.scale = Number(newValue);
+                break;
+            case "rotate":
+                this.rotate = Number(newValue);
+                break;
+            case "pivotx":
+                this.pivotX = Number(newValue);
+                break;
+            case "pivoty":
+                this.pivotY = Number(newValue);
+                break;
             case "opacity":
                 this.opacity = Number(newValue);
                 break;
-            case "opacity":
-                this.smooth = Boolean(newValue);
+            case "smooth":
+                this.smooth = newValue.toLowerCase() == "true";
                 break;
             case "stroke":
                 this.stroke = newValue;
@@ -134,6 +185,29 @@ export abstract class Component extends HTMLElement {
             case "fill":
                 this.fill = newValue;
                 break;
+        }
+    }
+
+    connectedCallback() {
+        this.ready = true;
+    }
+
+    /**
+     * Inherit a property from parents of a certain type.
+     * Works when using getters and setters with an underscored prop
+     * @param name the name of the property
+     * @param def the default (fallback) value
+     * @param type the type to inherit from
+     */
+    protected inherit<T, K>(name: string, def: T, type = Component): T {
+        if((typeof (this as any)["_" + name]) !== "undefined") {
+            return (this as any)["_" + name];
+        } else {
+            if(this.parentElement instanceof type) {
+                return this.parentElement.inherit(name, def, type);
+            } else {
+                return def;
+            }
         }
     }
 
@@ -148,6 +222,9 @@ export abstract class Component extends HTMLElement {
      * Bubble updates to root
      */
     shouldRender() {
+        if(!this.ready) {
+            return;
+        }
         if(this.parentElement instanceof Component) {
             this.parentElement.shouldRender();
         }
@@ -162,21 +239,33 @@ export abstract class Component extends HTMLElement {
      * 
      * @param context The rendering context to finish up
      */
-    renderWithStyles(context: CanvasRenderingContext2D, fill = true, stroke = true) {
+    renderWithStyles(context: CanvasRenderingContext2D, body: () => void) {
         // Don't impact context state
         context.save();
+
+        context.transform(this.scale, 0, 0, this.scale, this.x, this.y);
+
+
+        // context.translate(-10, -10);
+        context.translate(this.pivotX, this.pivotY);
+        context.rotate(this.rotate * Math.PI / 180);
+        context.translate(-this.pivotX, -this.pivotY);
+        // context.translate(this.pivotX, this.pivotY);
+
+
+        body();
 
         context.globalAlpha = this.opacity;
         context.imageSmoothingEnabled = this.smooth;
 
         // Fill
-        if(fill && this.fill != "none") {
+        if(this.fill != "none") {
             context.fillStyle = this.fill;
             context.fill();
         }
         
         // Stroke
-        if(stroke && this.stroke != "none") {
+        if(this.stroke != "none") {
             // Apply styles
             context.strokeStyle = this.stroke;
             context.lineWidth = this.strokeWidth;

@@ -24,17 +24,28 @@
 
     <a-graphic space="100x100">
         <!--Rays-->
-        <a-group stroke="#f00">
+        <a-group stroke="#f00" x="50" y="50">
             <a-path>
+                <a-point x="-10" y="-10"></a-point>
                 <a-point x="10" y="10"></a-point>
-                <a-point x="90" y="90"></a-point>
             </a-path>
             <a-path strokeWidth="1">
-                <a-point x="90" y="10"></a-point>
-                <a-point x="10" y="90"></a-point>
+                <a-point x="10" y="-10"></a-point>
+                <a-point x="-10" y="10"></a-point>
             </a-path>
         </a-group>
-        <a-circle x="50" y="50" radius="25" fill="#f00" stroke="#fff" strokeWidth="5"></a-circle>
+        <a-circle x="50" y="50" radius="10" fill="none" stroke="#00f"></a-circle>
+        <a-group stroke="#0f0" x="50" y="50" rotate="45">
+            <a-path>
+                <a-point x="-10" y="-10"></a-point>
+                <a-point x="10" y="10"></a-point>
+            </a-path>
+            <a-path strokeWidth="1">
+                <a-point x="10" y="-10"></a-point>
+                <a-point x="-10" y="10"></a-point>
+            </a-path>
+        </a-group>
+        <a-rectangle x="0" y="0" width="100" height="100"></a-rectangle>
     </a-graphic>
 </body>
 </html>

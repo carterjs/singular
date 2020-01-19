@@ -4,31 +4,6 @@ import { Component } from "../Component";
  * A vector rectangle
  */
 export class Rectangle extends Component {
-
-    /**
-     * Top left x
-     */
-    get x() {
-        return this._x;    
-    }
-    set x(x) {
-        this._x = x;
-        this.shouldRender();
-    }
-    _x = 0;
-
-    /**
-     * Top left y
-     */
-    get y() {
-        return this._y;    
-    }
-    set y(y) {
-        this._y = y;
-        this.shouldRender();
-    }
-    _y = 0;
-
     /**
      * Rectangle width
      */
@@ -57,8 +32,6 @@ export class Rectangle extends Component {
     static get observedAttributes() {
         return [
             ...super.observedAttributes,
-            "x",
-            "y",
             "width",
             "height"
         ];
@@ -66,12 +39,6 @@ export class Rectangle extends Component {
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
         switch(name) {
-            case "x":
-                this.x = Number(newValue);
-                break;
-            case "y":
-                this.y = Number(newValue);
-                break;
             case "width":
                 this.width = Number(newValue);
                 break;
@@ -83,16 +50,16 @@ export class Rectangle extends Component {
     }
 
     render(context: CanvasRenderingContext2D) {
-        // Draw rectangle
-        context.beginPath();
-        context.rect(
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
-
-        this.renderWithStyles(context);
+        this.renderWithStyles(context, () => {
+            // Draw rectangle
+            context.beginPath();
+            context.rect(
+                0,
+                0,
+                this.width,
+                this.height
+            );
+        });
     }
 }
 

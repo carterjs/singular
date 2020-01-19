@@ -53,6 +53,13 @@ export class AGraphic extends Root {
         this.shadowRoot!.appendChild(this.contentWrapper);
     }
 
+    update() {
+        // Sizing
+        this.realWidth = this.clientWidth;
+        this.realHeight = this.clientHeight;
+        super.update();
+    }
+
     render(context: CanvasRenderingContext2D) {
         this.context.clearRect(0, 0, this.width, this.height);
         super.render(context);

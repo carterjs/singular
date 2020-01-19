@@ -90,12 +90,12 @@ export class Line extends Component {
     }
 
     render(context: CanvasRenderingContext2D) {
-        // Draw rectangle
-        context.beginPath();
-        context.moveTo(this.x1, this.y1);
-        context.lineTo(this.x2, this.y2);
-
-        this.renderWithStyles(context, false);
+        this.renderWithStyles(context, () => {
+            // Draw rectangle
+            context.beginPath();
+            context.moveTo(this.x1, this.y1);
+            context.lineTo(this.x2, this.y2);
+        });
     }
 }
 

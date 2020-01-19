@@ -64,14 +64,6 @@ export class Root extends Component {
     }
     _realHeight?: number;
 
-    get scale() {
-        return this.inherit("scale", 1, Root);
-    }
-    set scale(scale) {
-        this._scale = scale;
-    }
-    _scale?: number;
-
     /**
      * The rendering quality
      */
@@ -97,10 +89,10 @@ export class Root extends Component {
             case "space":
                 const nums = newValue.split(/[^0-9]+/);
                 if(nums.length == 2) {
-                    this.width = Number(nums[0]) || 0;
-                    this.height = Number(nums[1]) || 0;
+                    this.width = Number(nums[0]);
+                    this.height = Number(nums[1]);
                 } else if(nums.length == 1) {
-                    this.width = this.height = Number(nums[0]) || 0;
+                    this.width = this.height = Number(nums[0]);
                 }
                 break;
             case "quality":
@@ -120,36 +112,37 @@ export class Root extends Component {
 
     connectedCallback() {
         this.update();
+        super.connectedCallback();
     }
 
     size() {
         const unitScale = Math.min(this.realWidth/this.width, this.realHeight/this.height);
-        
+
         // Set resolution
-        this.canvas.width = this.width * unitScale * this.quality;
-        this.canvas.height = this.height * unitScale * this.quality;
+        const width = Math.round(this.width * unitScale * this.quality);
+        const height = Math.round(this.height * unitScale * this.quality);
+
+        if(width != this.canvas.width || height != this.canvas.height) {
+            this.canvas.width = width;
+            this.canvas.height = height;
+        } else {
+            return;
+        }
 
         // Set size
         this.canvas.style.width = Math.round(this.width * unitScale) + "px";
         this.canvas.style.height = Math.round(this.height * unitScale) + "px";
 
         // Final scaling
-        this.scale = this.quality * unitScale;
-        this.context.scale(this.scale, this.scale);
+        const scale = this.quality * unitScale;
+        this.context.scale(scale, scale);
 
         // Re-draw
         this.shouldRender();
     }
 
     update() {
-        // Sizing
-        const realWidth = this.clientWidth;
-        const realHeight = this.clientHeight;
-        if(realWidth != this.realWidth || realHeight != this.realHeight) {
-            this.realWidth = realWidth;
-            this.realHeight = realHeight;
-            this.size();
-        }
+        this.size();
         window.requestAnimationFrame(this.update.bind(this));
     }
 

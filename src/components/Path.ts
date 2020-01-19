@@ -29,18 +29,19 @@ export class Path extends Component {
     }
 
     render(context: CanvasRenderingContext2D) {
-        // Draw rectangle
-        context.beginPath();
-    
-        this.points.forEach((point, index) => {
-            if(index == 0) {
-                context.moveTo(point.x, point.y);
-            } else {
-                context.lineTo(point.x, point.y);
-            }
+        this.renderWithStyles(context, () => {
+            // Draw rectangle
+            context.beginPath();
+                
+            // Draw lines to points
+            this.points.forEach((point, index) => {
+                if(index == 0) {
+                    context.moveTo(point.x, point.y);
+                } else {
+                    context.lineTo(point.x, point.y);
+                }
+            });
         });
-
-        this.renderWithStyles(context, false);
     }
 }
 
