@@ -8,7 +8,6 @@ import "./components";
  * A custom element for vector graphics
  */
 export class AGraphic extends Group {
-
     /**
      * A wrapper for the svg or canvas element.
      * This is used so that rendering doesn't overwrite styles
@@ -18,8 +17,10 @@ export class AGraphic extends Group {
     constructor() {
         super();
 
+        // Attach the shadow root
         this.attachShadow({mode: "open"});
 
+        // Apply styles
         this.shadowRoot!.innerHTML = `
             <style>
                 :host {
@@ -47,24 +48,23 @@ export class AGraphic extends Group {
                     transform: translate(-50%, -50%);
                 }
             </style>
-            <slot></slot>
         `;
 
-        // Wrapper for primary content
+        // Add wrapper for primary content
         this.contentWrapper = document.createElement("div");
         this.contentWrapper.className = "content";
         this.shadowRoot!.appendChild(this.contentWrapper);
     }
 
-    connectedCallback()  {
-        this.update();
-    }
-
     update() {
-        // Sizing
+        // Resize dimensions to match element size
         this.realWidth = this.clientWidth;
         this.realHeight = this.clientHeight;
+
+        // Trigger general update
         super.update();
+
+        // Render canvas to DOM
         render(this.canvas, this.contentWrapper);
     }
 }

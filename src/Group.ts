@@ -84,14 +84,18 @@ export class Group extends VisibleComponent {
         ];
     }
 
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
             case "space":
+                // Split at any divider
                 const nums = newValue.split(/[^0-9]+/);
+
                 if(nums.length == 2) {
+                    // Two dimensions given - x and y
                     this.width = Number(nums[0]);
                     this.height = Number(nums[1]);
                 } else if(nums.length == 1) {
+                    // One dimension given - use for both
                     this.width = this.height = Number(nums[0]);
                 }
                 break;
@@ -115,12 +119,14 @@ export class Group extends VisibleComponent {
     }
 
     size() {
+        // Scale to use defined unit space
         const unitScale = Math.min(this.realWidth/this.width, this.realHeight/this.height);
 
         // Set resolution
         const width = Math.round(this.width * unitScale * this.quality);
         const height = Math.round(this.height * unitScale * this.quality);
 
+        // Only continue if canvas width has changed
         if(width != this.canvas.width || height != this.canvas.height) {
             this.canvas.width = width;
             this.canvas.height = height;
@@ -140,6 +146,9 @@ export class Group extends VisibleComponent {
         this.shouldRender = true;
     }
 
+    /**
+     * Animation frame loop for triggering changes
+     */
     update() {
         this.size();
         if(this.shouldRender) {

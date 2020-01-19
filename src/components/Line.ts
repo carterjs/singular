@@ -63,7 +63,7 @@ export class Line extends VisibleComponent {
         ];
     }
 
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
             case "x1":
             case "y1":

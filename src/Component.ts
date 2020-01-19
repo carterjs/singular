@@ -1,3 +1,7 @@
+/**
+ * A general component.
+ * Components can inherit props and trigger renders
+ */
 export abstract class Component extends HTMLElement {
     /**
      * Store whether or not the component should be re-rendered
@@ -6,11 +10,13 @@ export abstract class Component extends HTMLElement {
         return this._shouldRender;
     }
     set shouldRender(shouldRender) {
+        // Set value
+        this._shouldRender = shouldRender;
+
         // Bubble up to parents
         if(shouldRender && this.parentElement instanceof Component) {
             this.parentElement.shouldRender = shouldRender;
         }
-        this._shouldRender = shouldRender;
     }
     _shouldRender = false;
 

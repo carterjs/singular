@@ -2,10 +2,13 @@ import { VisibleComponent } from "../VisibleComponent";
 import { Point } from "./Point";
 
 /**
- * A vector path
+ * A group of points
  */
 export class Path extends VisibleComponent {
     
+    /**
+     * The list of points to render
+     */
     get points() {
         return this._points;
     }
@@ -15,6 +18,12 @@ export class Path extends VisibleComponent {
     }
     _points: {x: number, y: number}[] = [];
 
+    /**
+     * Add a new point to the path and trigger an update
+     * 
+     * @param x The x value
+     * @param y The y value
+     */
     addPoint(x: number, y: number) {
         this.points.push({x, y});
         this.shouldRender = true;
@@ -31,14 +40,14 @@ export class Path extends VisibleComponent {
 
     render(context: CanvasRenderingContext2D) {
         this.renderWithStyles(context, () => {
-            // Draw rectangle
+            // Draw the path
             context.beginPath();
-                
-            // Draw lines to points
             this.points.forEach((point, index) => {
                 if(index == 0) {
+                    // Move to starting position
                     context.moveTo(point.x, point.y);
                 } else {
+                    // Draw line to point
                     context.lineTo(point.x, point.y);
                 }
             });

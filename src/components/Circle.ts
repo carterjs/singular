@@ -24,7 +24,7 @@ export class Circle extends VisibleComponent {
         ];
     }
 
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
             case "radius":
                 this.radius = Number(newValue);

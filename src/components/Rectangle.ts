@@ -28,7 +28,6 @@ export class Rectangle extends VisibleComponent {
     }
     _height = 0;
 
-
     static get observedAttributes() {
         return [
             ...super.observedAttributes,
@@ -37,7 +36,7 @@ export class Rectangle extends VisibleComponent {
         ];
     }
 
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
             case "width":
             case "height":

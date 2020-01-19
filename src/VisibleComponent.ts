@@ -1,5 +1,9 @@
 import { Component } from "./Component";
 
+/**
+ * A visual component.
+ * Visual components can render to the canvas and accept styles
+ */
 export abstract class VisibleComponent extends Component {
     /**
      * X translation
@@ -121,6 +125,10 @@ export abstract class VisibleComponent extends Component {
     }
     _fill?: string;
 
+    /**
+     * All of the attributes that should be tracked.
+     * Make sure to call super's version when extending
+     */
     static get observedAttributes(): string[] {
         return [
             "x",
@@ -136,7 +144,13 @@ export abstract class VisibleComponent extends Component {
         ];
     }
 
-    attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    /**
+     * 
+     * @param name Property name
+     * @param oldValue Previous value
+     * @param newValue New value
+     */
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
             case "x":
             case "y":
