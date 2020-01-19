@@ -1,9 +1,9 @@
-import { VisibleComponent } from "./VisibleComponent";
+import { VisualComponent } from "./VisualComponent";
 
 /**
  * A wrapper for components
  */
-export class Group extends VisibleComponent {
+export class Group extends VisualComponent {
     /**
      * The canvas.
      * Stored to prevent unnecessary resizing

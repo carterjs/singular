@@ -1,9 +1,9 @@
-import { VisibleComponent } from "../VisibleComponent";
+import { VisualComponent } from "../VisualComponent";
 
 /**
  * A vector line
  */
-export class Line extends VisibleComponent {
+export class Line extends VisualComponent {
 
     /**
      * Start point x

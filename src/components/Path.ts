@@ -1,10 +1,10 @@
-import { VisibleComponent } from "../VisibleComponent";
+import { VisualComponent } from "../VisualComponent";
 import { Point } from "./Point";
 
 /**
  * A group of points
  */
-export class Path extends VisibleComponent {
+export class Path extends VisualComponent {
     
     /**
      * The list of points to render

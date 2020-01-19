@@ -1,9 +1,9 @@
-import { VisibleComponent } from "../VisibleComponent";
+import { VisualComponent } from "../VisualComponent";
 
 /**
  * A vector circle
  */
-export class Circle extends VisibleComponent {
+export class Circle extends VisualComponent {
 
     /**
      * Circle radius

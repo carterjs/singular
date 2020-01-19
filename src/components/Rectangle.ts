@@ -1,9 +1,9 @@
-import { VisibleComponent } from "../VisibleComponent";
+import { VisualComponent } from "../VisualComponent";
 
 /**
  * A vector rectangle
  */
-export class Rectangle extends VisibleComponent {
+export class Rectangle extends VisualComponent {
     /**
      * Rectangle width
      */

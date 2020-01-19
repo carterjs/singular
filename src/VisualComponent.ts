@@ -4,7 +4,7 @@ import { Component } from "./Component";
  * A visual component.
  * Visual components can render to the canvas and accept styles
  */
-export abstract class VisibleComponent extends Component {
+export abstract class VisualComponent extends Component {
     /**
      * X translation
      */
