@@ -1,5 +1,6 @@
 import { VisualComponent } from "./VisualComponent";
 import { property } from "./property";
+import { inheritableProperty } from "./inheritableProperty";
 
 export interface Process {
     name: string,
@@ -25,32 +26,27 @@ export class Group extends VisualComponent {
     /**
      * The width of the virtual space
      */
-    @property(100)
-    width: any;
+    @inheritableProperty(100) width!: number;
 
     /**
      * The height of the virtual space
      */
-    @property(100)
-    height: any;
+    @inheritableProperty(100) height!: number;
 
     /**
      * The actual width of the canvas
      */
-    @property(0)
-    realWidth: any;
+    @inheritableProperty(0) realWidth!: number;
 
     /**
      * The height of the virtual space
      */
-    @property(0)
-    realHeight: any;
+    @inheritableProperty(0) realHeight!: number;
 
     /**
      * The rendering quality
      */
-    @property(window.devicePixelRatio)
-    quality: any;
+    @inheritableProperty(window.devicePixelRatio) quality!: number;
 
     processes: Process[] = [];
 
@@ -157,7 +153,10 @@ export class Group extends VisualComponent {
             // Render children only on self calls
             context.clearRect(0, 0, this.width, this.height);
             this.getChildren().forEach((component) => {
+                context.save();
+                context.transform(1, 0, 0, 1, this.x, this.y);
                 component.render(context);
+                context.restore();
             });
         } else {
             // Simply use saved state for parent calls

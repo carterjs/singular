@@ -1,7 +1,7 @@
 import { Group } from "./Group";
 import { render } from "lit-html";
 
-// function inheritable(target: any, name: string) {
+// function property(target: any, name: string) {
 //     Object.defineProperty(target, name, {
 //         get: function() {
 //             console.log(this);
@@ -16,7 +16,7 @@ import { render } from "lit-html";
 // }
 
 // class A {
-//     @inheritable test = "hello";
+//     @property test = "hello";
 // }
 
 // const a = new A();
@@ -26,6 +26,7 @@ import { render } from "lit-html";
 
 // Register components
 import "./components";
+import { Component } from "./Component";
 
 /**
  * A custom element for vector graphics
@@ -80,6 +81,7 @@ export class AGraphic extends Group {
     }
 
     update() {
+
         // Resize dimensions to match element size
         this.realWidth = this.clientWidth;
         this.realHeight = this.clientHeight;

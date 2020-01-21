@@ -1,5 +1,6 @@
 import { Group, Process } from "./Group";
 import { property } from "./property";
+import { inheritableProperty } from "./inheritableProperty";
 
 /**
  * A general component.
@@ -23,7 +24,7 @@ export abstract class Component extends HTMLElement {
     }
     _shouldRender = false;
     
-    @property(200)
+    @inheritableProperty()
     animationDuration?: number;
 
     get group(): Group | null {

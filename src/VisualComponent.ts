@@ -1,5 +1,7 @@
 import { Component } from "./Component";
 import { property } from "./property";
+import { inheritableProperty } from "./inheritableProperty";
+import { animate } from "./animate";
 
 /**
  * A visual component.
@@ -9,62 +11,54 @@ export abstract class VisualComponent extends Component {
     /**
      * X translation
      */
-    @property(0) x: any;
+    @property x = 0;
 
     /**
      * Y translation
      */
-    @property(0)
-    y: any;
+    @property y = 0;
 
     /**
      * Scale
      */
-    @property(1)
-    scale: any;
+    @inheritableProperty(1) scale!: number;
 
     /**
      * Rotation (degrees)
      */
-    @property(0)
-    rotate: any;
+    @inheritableProperty(0)
+    rotate!: number;
 
     /**
      * X transform origin
      */
-    @property(0)
-    pivotX: any;
+    @property pivotX!: number;
 
     /**
      * Y transform origin
      */
-    @property(0)
-    pivotY : any;
+    @property pivotY!: number;
 
     /**
      * Opacity for component
      */
-    @property(1)
-    opacity: any;
+    @inheritableProperty(1) opacity!: number;
 
 
     /**
      * Property for stroke
      */
-    @property("#000000")
-    stroke: any;
+    @inheritableProperty("#000000") stroke!: string;
 
     /**
      * Property for stroke width
      */
-    @property(1)
-    strokeWidth: any;
+    @inheritableProperty(1) strokeWidth!: number;
 
     /**
      * Property for fill
      */
-    @property("none")
-    fill: any;
+    @inheritableProperty("none") fill!: string;
 
     /**
      * All of the attributes that should be tracked.

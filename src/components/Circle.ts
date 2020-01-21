@@ -1,13 +1,15 @@
 import { VisualComponent } from "../VisualComponent";
+import { animate, ease } from "../animate";
 import { property } from "../property";
+import { Component } from "../Component";
 
 /**
  * A vector circle
  */
 export class Circle extends VisualComponent {
 
-    @property(0, true)
-    radius?: number;
+    @animate(10000)
+    radius: number = 0;
 
     static get observedAttributes() {
         return [
@@ -32,7 +34,7 @@ export class Circle extends VisualComponent {
             context.arc(
                 0,
                 0,
-                Number(this.radius),
+                this.radius!,
                 0,
                 2*Math.PI
             );
