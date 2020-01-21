@@ -1,3 +1,6 @@
+import { Group, Process } from "./Group";
+import { property } from "./property";
+
 /**
  * A general component.
  * Components can inherit props and trigger renders
@@ -19,24 +22,30 @@ export abstract class Component extends HTMLElement {
         }
     }
     _shouldRender = false;
+    
+    @property(200)
+    animationDuration?: number;
 
-    /**
-     * Inherit a property from parents of a certain type.
-     * Works when using getters and setters with an underscored prop
-     * @param name the name of the property
-     * @param def the default (fallback) value
-     * @param type the type to inherit from
-     */
-    protected inherit<T>(name: string, def: T, type = Component): T {
-        if((typeof (this as any)["_" + name]) !== "undefined") {
-            return (this as any)["_" + name];
+    get group(): Group | null {
+        if(this.parentElement instanceof Component) {
+            return this.parentElement.group;
         } else {
-            if(this.parentElement instanceof type) {
-                return this.parentElement.inherit(name, def, type);
-            } else {
-                return def;
-            }
+            return null;
         }
+    }
+
+    runProcess(name: string, body: () => boolean, render = true) {
+        const group = this.group;
+        if(!group) {
+            console.error("This component is not within a group, so processes cannot be run.");
+            return;
+        }
+        group.processes.push({name, body: () => {
+            if(render) {
+                this.shouldRender = true;
+            }
+            return body();
+        }});
     }
 
     /**

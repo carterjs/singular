@@ -1,4 +1,5 @@
 import { Component } from "../Component";
+import { property } from "../property";
 
 /**
  * A vector point
@@ -7,26 +8,14 @@ export class Point extends Component {
     /**
      * X value
      */
-    get x(): number {
-        return this.inherit("x", 0);
-    }
-    set x(x) {
-        this._x = x;
-        this.shouldRender = true;
-    }
-    _x?: number;
+    @property(0)
+    x?: number;
 
     /**
      * Y value
      */
-    get y(): number {
-        return this.inherit("y", 0);
-    }
-    set y(y) {
-        this._y = y;
-        this.shouldRender = true;
-    }
-    _y?: number;
+    @property(0)
+    y?: number;
 
     static get observedAttributes() {
         return [

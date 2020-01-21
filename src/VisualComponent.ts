@@ -1,4 +1,5 @@
 import { Component } from "./Component";
+import { property } from "./property";
 
 /**
  * A visual component.
@@ -8,122 +9,62 @@ export abstract class VisualComponent extends Component {
     /**
      * X translation
      */
-    get x(): number {
-        return this.inherit("x", 0);
-    }
-    set x(x) {
-        this._x = x;
-        this.shouldRender = true;
-    }
-    _x?: number;
+    @property(0) x: any;
 
     /**
      * Y translation
      */
-    get y(): number {
-        return this.inherit("y", 0);
-    }
-    set y(y) {
-        this._y = y;
-        this.shouldRender = true;
-    }
-    _y?: number;
+    @property(0)
+    y: any;
 
     /**
      * Scale
      */
-    get scale(): number {
-        return this.inherit("scale", 1);
-    }
-    set scale(scale) {
-        this._scale = scale;
-        this.shouldRender = true;
-    }
-    _scale?: number;
+    @property(1)
+    scale: any;
 
     /**
      * Rotation (degrees)
      */
-    get rotate(): number {
-        return this.inherit("rotate", 0);
-    }
-    set rotate(rotate) {
-        this._rotate = rotate;
-        this.shouldRender = true;
-    }
-    _rotate?: number;
+    @property(0)
+    rotate: any;
 
     /**
      * X transform origin
      */
-    get pivotX(): number {
-        return this.inherit("pivotX", 0);
-    }
-    set pivotX(pivotX) {
-        this._pivotX = pivotX;
-        this.shouldRender = true;
-    }
-    _pivotX?: number;
+    @property(0)
+    pivotX: any;
 
     /**
      * Y transform origin
      */
-    get pivotY(): number {
-        return this.inherit("pivotY", 0);
-    }
-    set pivotY(pivotY) {
-        this._pivotY = pivotY;
-        this.shouldRender = true;
-    }
-    _pivotY?: number;
+    @property(0)
+    pivotY : any;
 
     /**
      * Opacity for component
      */
-    get opacity(): number {
-        return this.inherit("opacity", 1);
-    }
-    set opacity(opacity) {
-        this._opacity = opacity;
-        this.shouldRender = true;
-    }
-    _opacity?: number;
+    @property(1)
+    opacity: any;
+
 
     /**
      * Property for stroke
      */
-    get stroke(): string {
-        return this.inherit("stroke", "#000");
-    }
-    set stroke(stroke) {
-        this._stroke = stroke;
-        this.shouldRender = true;
-    }
-    _stroke?: string;
+    @property("#000000")
+    stroke: any;
 
     /**
      * Property for stroke width
      */
-    get strokeWidth(): number {
-        return this.inherit("strokeWidth", 1);
-    }
-    set strokeWidth(strokeWidth) {
-        this._strokeWidth = strokeWidth;
-        this.shouldRender = true;
-    }
-    _strokeWidth?: number;
+    @property(1)
+    strokeWidth: any;
 
     /**
      * Property for fill
      */
-    get fill(): string {
-        return this.inherit("fill", "none");
-    }
-    set fill(fill) {
-        this._fill = fill;
-        this.shouldRender = true;
-    }
-    _fill?: string;
+    @property("none")
+    fill: any;
 
     /**
      * All of the attributes that should be tracked.
@@ -188,7 +129,7 @@ export abstract class VisualComponent extends Component {
         // Don't impact context state
         context.save();
 
-        // Apply scale and translation transformations
+        // Apply scale and translation transformation
         context.transform(this.scale, 0, 0, this.scale, this.x, this.y);
 
         // Rotate at pivot

@@ -1,4 +1,10 @@
 import { VisualComponent } from "./VisualComponent";
+import { property } from "./property";
+
+export interface Process {
+    name: string,
+    body: () => boolean
+}
 
 /**
  * A wrapper for components
@@ -19,62 +25,38 @@ export class Group extends VisualComponent {
     /**
      * The width of the virtual space
      */
-    get width(): number {
-        return this.inherit("width", 100, Group);
-    }
-    set width(width) {
-        this._width = width;
-        this.size();
-    }
-    _width?: number;
+    @property(100)
+    width: any;
 
     /**
      * The height of the virtual space
      */
-    get height() {
-        return this.inherit("height", 100, Group);
-    }
-    set height(height) {
-        this._height = height;
-        this.size();
-    }
-    _height?: number;
+    @property(100)
+    height: any;
 
     /**
      * The actual width of the canvas
      */
-    get realWidth() {
-        return this.inherit("realWidth", 100, Group);
-    }
-    set realWidth(realWidth) {
-        this._realWidth = realWidth;
-        this.size();
-    }
-    _realWidth?: number;
+    @property(0)
+    realWidth: any;
 
     /**
      * The height of the virtual space
      */
-    get realHeight() {
-        return this.inherit("realHeight", 100, Group);
-    }
-    set realHeight(realHeight) {
-        this._realHeight = realHeight;
-        this.size();
-    }
-    _realHeight?: number;
+    @property(0)
+    realHeight: any;
 
     /**
      * The rendering quality
      */
-    get quality() {
-        return this.inherit("quality", window.devicePixelRatio, Group);
+    @property(window.devicePixelRatio)
+    quality: any;
+
+    processes: Process[] = [];
+
+    get group() {
+        return this;
     }
-    set quality(quality) {
-        this._quality = quality;
-        this.size();
-    }
-    _quality?: number;
 
     static get observedAttributes(): string[] {
         return [
@@ -122,6 +104,10 @@ export class Group extends VisualComponent {
         // Scale to use defined unit space
         const unitScale = Math.min(this.realWidth/this.width, this.realHeight/this.height);
 
+        if(unitScale == 0) {
+            return;
+        }
+
         // Set resolution
         const width = Math.round(this.width * unitScale * this.quality);
         const height = Math.round(this.height * unitScale * this.quality);
@@ -150,7 +136,15 @@ export class Group extends VisualComponent {
      * Animation frame loop for triggering changes
      */
     update() {
+        // Update sizing
         this.size();
+
+        // Run processes and filter
+        this.processes = this.processes.filter((process) => {
+            return process.body();
+        });
+
+        // Re-render
         if(this.shouldRender) {
             this.render(this.context);
             this.shouldRender = false;

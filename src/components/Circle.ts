@@ -1,21 +1,13 @@
 import { VisualComponent } from "../VisualComponent";
+import { property } from "../property";
 
 /**
  * A vector circle
  */
 export class Circle extends VisualComponent {
 
-    /**
-     * Circle radius
-     */
-    get radius() {
-        return this._radius;
-    }
-    set radius(radius) {
-        this._radius = radius;
-        this.shouldRender = true;
-    }
-    _radius?: number;
+    @property(0, true)
+    radius?: number;
 
     static get observedAttributes() {
         return [

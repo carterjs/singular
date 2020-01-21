@@ -1,6 +1,29 @@
 import { Group } from "./Group";
 import { render } from "lit-html";
 
+// function inheritable(target: any, name: string) {
+//     Object.defineProperty(target, name, {
+//         get: function() {
+//             console.log(this);
+//             return this["_" + name];
+//         },
+//         set: function(value) {
+//             this["_" + name] = value;
+//         },
+//         enumerable: true,
+//         configurable: true
+//     });
+// }
+
+// class A {
+//     @inheritable test = "hello";
+// }
+
+// const a = new A();
+// a.test = "world";
+// console.log(a.test);
+
+
 // Register components
 import "./components";
 
@@ -40,7 +63,7 @@ export class AGraphic extends Group {
                     position: relative;
                 }
                 canvas {
-                    transition: all 250ms ease-in-out;
+                    // transition: all 100ms ease-in-out;
                     display: block;
                     position: absolute;
                     top: 50%;

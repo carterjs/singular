@@ -31,18 +31,14 @@ export class Path extends VisualComponent {
 
     constructor() {
         super();
-
-        // Get all points to start
-        this.points = this.getChildren(Point).map((point) => {
-            return {x: point.x, y: point.y};
-        }) as {x: number, y: number}[];
     }
 
     render(context: CanvasRenderingContext2D) {
+
         this.renderWithStyles(context, () => {
             // Draw the path
             context.beginPath();
-            this.points.forEach((point, index) => {
+            this.getChildren(Point).forEach((point, index) => {
                 if(index == 0) {
                     // Move to starting position
                     context.moveTo(point.x, point.y);
@@ -51,8 +47,6 @@ export class Path extends VisualComponent {
                     context.lineTo(point.x, point.y);
                 }
             });
-
-            console.log(this.points);
         });
     }
 }
