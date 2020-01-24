@@ -1,7 +1,5 @@
 import { Component } from "./Component";
-import { property } from "./property";
-import { inheritableProperty } from "./inheritableProperty";
-import { animate } from "./animate";
+import { property, inherit } from "./property";
 
 /**
  * A visual component.
@@ -9,56 +7,44 @@ import { animate } from "./animate";
  */
 export abstract class VisualComponent extends Component {
     /**
-     * X translation
-     */
-    @property x = 0;
-
-    /**
-     * Y translation
-     */
-    @property y = 0;
-
-    /**
      * Scale
      */
-    @inheritableProperty(1) scale!: number;
+    @property() scale!: number;
 
     /**
      * Rotation (degrees)
      */
-    @inheritableProperty(0)
-    rotate!: number;
+    @property() rotate!: number;
 
     /**
      * X transform origin
      */
-    @property pivotX!: number;
+    @property() pivotX = 0;
 
     /**
      * Y transform origin
      */
-    @property pivotY!: number;
+    @property() pivotY = 0;
 
     /**
      * Opacity for component
      */
-    @inheritableProperty(1) opacity!: number;
-
+    @property() opacity = 1;
 
     /**
      * Property for stroke
      */
-    @inheritableProperty("#000000") stroke!: string;
+    @property(inherit("#000000")) stroke!: string;
 
     /**
      * Property for stroke width
      */
-    @inheritableProperty(1) strokeWidth!: number;
+    @property(inherit(1)) strokeWidth!: number;
 
     /**
      * Property for fill
      */
-    @inheritableProperty("none") fill!: string;
+    @property(inherit("none")) fill!: string;
 
     /**
      * All of the attributes that should be tracked.
@@ -66,8 +52,6 @@ export abstract class VisualComponent extends Component {
      */
     static get observedAttributes(): string[] {
         return [
-            "x",
-            "y",
             "scale",
             "rotate",
             "pivotx",
@@ -87,8 +71,6 @@ export abstract class VisualComponent extends Component {
      */
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
-            case "x":
-            case "y":
             case "scale":
             case "rotate":
             case "opacity":
@@ -123,11 +105,9 @@ export abstract class VisualComponent extends Component {
         // Don't impact context state
         context.save();
 
-        // Apply scale and translation transformation
-        context.transform(this.scale, 0, 0, this.scale, this.x, this.y);
-
-        // Rotate at pivot
+        // Rotate and scale at pivot
         context.translate(this.pivotX, this.pivotY);
+        context.scale(this.scale, this.scale);
         context.rotate(this.rotate * Math.PI / 180);
         context.translate(-this.pivotX, -this.pivotY);
 
@@ -136,8 +116,6 @@ export abstract class VisualComponent extends Component {
 
         // Execute nested operations
         body();
-
-        context.globalAlpha = this.opacity;
 
         // Fill
         if(this.fill != "none") {
@@ -156,4 +134,30 @@ export abstract class VisualComponent extends Component {
         // Return to initial state
         context.restore();
     }
+
+    transition(propName: string, newValue: number, duration: number) {
+        // Make sure there's a group
+        const group = this.group;
+        if(!group) {
+            return;
+        }
+
+        // Animate transition
+        const oldValue = (this as any)[propName];
+        const startTime = Date.now();
+        const diff = newValue - oldValue;
+        group.run(`transition of "${propName}" on ${this.tagName}`, () => {
+            (this as any)[propName] = oldValue + ease((Date.now() - startTime)/duration) * diff;
+            if(Date.now() < startTime + duration) {
+                return true;
+            } else {
+                (this as any)[propName] = newValue;
+                return false;
+            }
+        });
+    }
+}
+
+function ease(x: number): number {
+    return x<.5 ? 4*x*x*x : (x-1)*(2*x-2)*(2*x-2)+1;
 }

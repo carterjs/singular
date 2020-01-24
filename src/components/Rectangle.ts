@@ -1,36 +1,36 @@
 import { VisualComponent } from "../VisualComponent";
+import { property } from "../property";
 
 /**
  * A vector rectangle
  */
 export class Rectangle extends VisualComponent {
+
+    /**
+     * Left x
+     */
+    @property() x = 0;
+
+    /**
+     * Top y
+     */
+    @property() y = 0;
+
     /**
      * Rectangle width
      */
-    get width() {
-        return this._width;    
-    }
-    set width(width) {
-        this._width = width;
-        this.shouldRender = true;
-    }
-    _width = 0;
+    @property() width = 0;
 
     /**
      * Rectangle height
      */
-    get height() {
-        return this._height;    
-    }
-    set height(height) {
-        this._height = height;
-        this.shouldRender = true;
-    }
-    _height = 0;
+    @property() height = 0;
 
     static get observedAttributes() {
         return [
             ...super.observedAttributes,
+            "x",
+            "y",
             "width",
             "height"
         ];
@@ -38,6 +38,8 @@ export class Rectangle extends VisualComponent {
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch(name) {
+            case "x":
+            case "y":
             case "width":
             case "height":
                 this[name] = Number(newValue);
@@ -51,8 +53,8 @@ export class Rectangle extends VisualComponent {
             // Draw rectangle
             context.beginPath();
             context.rect(
-                0,
-                0,
+                this.x,
+                this.y,
                 this.width,
                 this.height
             );

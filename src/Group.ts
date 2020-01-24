@@ -1,6 +1,5 @@
 import { VisualComponent } from "./VisualComponent";
-import { property } from "./property";
-import { inheritableProperty } from "./inheritableProperty";
+import { property, inherit } from "./property";
 
 export interface Process {
     name: string,
@@ -24,39 +23,49 @@ export class Group extends VisualComponent {
     protected context: CanvasRenderingContext2D;
 
     /**
+     * Translation X
+     */
+    @property() x: number = 0;
+
+    /**
+     * Translation Y
+     */
+    @property() y: number = 0;
+
+    /**
      * The width of the virtual space
      */
-    @inheritableProperty(100) width!: number;
+    @property(inherit(100)) width!: number;
 
     /**
      * The height of the virtual space
      */
-    @inheritableProperty(100) height!: number;
+    @property(inherit(100)) height!: number;
 
     /**
      * The actual width of the canvas
      */
-    @inheritableProperty(0) realWidth!: number;
+    @property(inherit(100)) realWidth!: number;
 
     /**
      * The height of the virtual space
      */
-    @inheritableProperty(0) realHeight!: number;
+    @property(inherit(100)) realHeight!: number;
 
     /**
      * The rendering quality
      */
-    @inheritableProperty(window.devicePixelRatio) quality!: number;
+    @property(inherit(window.devicePixelRatio)) quality!: number;
 
-    processes: Process[] = [];
+    private processes: {[key: string]: () => boolean} = {};
 
-    get group() {
-        return this;
-    }
+    group = this;
 
     static get observedAttributes(): string[] {
         return [
             ...super.observedAttributes,
+            "x",
+            "y",
             "space",
             "quality"
         ];
@@ -68,6 +77,7 @@ export class Group extends VisualComponent {
                 // Split at any divider
                 const nums = newValue.split(/[^0-9]+/);
 
+                // Interpret
                 if(nums.length == 2) {
                     // Two dimensions given - x and y
                     this.width = Number(nums[0]);
@@ -77,8 +87,10 @@ export class Group extends VisualComponent {
                     this.width = this.height = Number(nums[0]);
                 }
                 break;
+            case "x":
+            case "y":
             case "quality":
-                this.quality = Number(newValue);
+                this[name] = Number(newValue);
                 break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
@@ -96,13 +108,14 @@ export class Group extends VisualComponent {
         this.update();
     }
 
+    run(key: string, process: () => boolean) {
+        // console.info(`"${key}" has started.`);
+        this.processes[key] = process;
+    }
+
     size() {
         // Scale to use defined unit space
         const unitScale = Math.min(this.realWidth/this.width, this.realHeight/this.height);
-
-        if(unitScale == 0) {
-            return;
-        }
 
         // Set resolution
         const width = Math.round(this.width * unitScale * this.quality);
@@ -136,8 +149,11 @@ export class Group extends VisualComponent {
         this.size();
 
         // Run processes and filter
-        this.processes = this.processes.filter((process) => {
-            return process.body();
+        Object.keys(this.processes).forEach((key) => {
+            if(!this.processes[key]()) {
+                // console.info(key, "has finished");
+                delete this.processes[key];
+            } 
         });
 
         // Re-render
@@ -149,20 +165,40 @@ export class Group extends VisualComponent {
     }
 
     render(context: CanvasRenderingContext2D) {
-        if(context == this.context) {
-            // Render children only on self calls
-            context.clearRect(0, 0, this.width, this.height);
-            this.getChildren().forEach((component) => {
-                context.save();
-                context.transform(1, 0, 0, 1, this.x, this.y);
-                component.render(context);
-                context.restore();
+        this.context.clearRect(0, 0, this.width, this.height);
+
+        // Render children with styles
+        this.getChildren().forEach((component) => {
+            this.renderWithStyles(this.context, () => {
+                component.render(this.context);
             });
-        } else {
-            // Simply use saved state for parent calls
-            context.drawImage(this.canvas, 0, 0, this.width, this.height);
-        }
-        
+        });
+
+        // Apply opacity to image
+        context.save();
+        context.globalAlpha = this.opacity;
+        context.drawImage(this.canvas, 0, 0, this.width, this.height);
+        context.restore();
+    }
+
+    renderWithStyles(context: CanvasRenderingContext2D, body: () => void) {
+        // Don't impact context state
+        context.save();
+
+        // Translate
+        context.translate(this.x, this.y);
+
+        // Rotate and scale at pivot
+        context.translate(this.pivotX, this.pivotY);
+        context.scale(this.scale, this.scale);
+        context.rotate(this.rotate * Math.PI / 180);
+        context.translate(-this.pivotX, -this.pivotY);
+
+        // Execute nested operations
+        body();
+
+        // Return to initial state
+        context.restore();
     }
 }
 

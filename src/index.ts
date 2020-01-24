@@ -81,7 +81,6 @@ export class AGraphic extends Group {
     }
 
     update() {
-
         // Resize dimensions to match element size
         this.realWidth = this.clientWidth;
         this.realHeight = this.clientHeight;

@@ -21,30 +21,20 @@
 
     <!--Include the component-->
     <script type="module" src="./index.js"></script>
-    <a-graphic space="100x100" strokeWidth="3">
-        <a-group stroke="#f00" x="50" y="50">
-            <a-path>
-                <a-point x="-10" y="-10"></a-point>
-                <a-point x="10" y="10"></a-point>
+    <a-graphic space="100x100" stroke="yellow">
+        <a-circle x="50" y="50" radius="45" fill="pink"></a-circle>
+        <a-group x="50" y="50" rotate="45">
+            <a-path stroke="blue">
+                <a-point x="-10" y="-5"></a-point>
+                <a-point x="-5" y="5"></a-point>
+                <a-point x="0" y="-5"></a-point>
+                <a-point x="5" y="5"></a-point>
+                <a-point x="10" y="-5"></a-point>
             </a-path>
-            <a-path>
-                <a-point x="10" y="-10"></a-point>
-                <a-point x="-10" y="10"></a-point>
-            </a-path>
-            <a-circle x="10" y="10" radius="10"></a-circle>
+            <a-line x1="-20" y1="-20" x2="20" y2="-20"></a-line>
+            <a-line x1="-20" y1="20" x2="20" y2="20"></a-line>
         </a-group>
-        <a-circle x="50" y="50" radius="10" fill="none" stroke="#00f"></a-circle>
-        <a-group stroke="#0f0" x="50" y="50" rotate="45">
-            <a-path>
-                <a-point x="-10" y="-10"></a-point>
-                <a-point x="10" y="10"></a-point>
-            </a-path>
-            <a-path>
-                <a-point x="10" y="-10"></a-point>
-                <a-point x="-10" y="10"></a-point>
-            </a-path>
-        </a-group>
-        <a-rectangle x="0" y="0" width="100" height="100"></a-rectangle>
+        <a-rectangle x="0" y="0" width="100" height="100" stroke="red"></a-rectangle>
     </a-graphic>
 </body>
 </html>

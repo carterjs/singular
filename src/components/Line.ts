@@ -1,4 +1,5 @@
 import { VisualComponent } from "../VisualComponent";
+import { property } from "../property";
 
 /**
  * A vector line
@@ -8,50 +9,22 @@ export class Line extends VisualComponent {
     /**
      * Start point x
      */
-    get x1() {
-        return this._x1;
-    }
-    set x1(x1) {
-        this._x1 = x1;
-        this.shouldRender = true;
-    }
-    _x1 = 0;
+    @property() x1 = 0;
 
     /**
      * Start point y
      */
-    get y1() {
-        return this._y1;
-    }
-    set y1(y1) {
-        this._y1 = y1;
-        this.shouldRender = true;
-    }
-    _y1 = 0;
+    @property() y1 = 0;
 
     /**
      * End point x
      */
-    get x2() {
-        return this._x2;
-    }
-    set x2(x2) {
-        this._x2 = x2;
-        this.shouldRender = true;
-    }
-    _x2 = 0;
+    @property() x2 = 0;
     
     /**
      * End point y
      */
-    get y2() {
-        return this._y2;
-    }
-    set y2(y2) {
-        this._y2 = y2;
-        this.shouldRender = true;
-    }
-    _y2 = 0;
+    @property() y2 = 0;
 
     static get observedAttributes() {
         return [

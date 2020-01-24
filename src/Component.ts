@@ -1,6 +1,5 @@
 import { Group, Process } from "./Group";
-import { property } from "./property";
-import { inheritableProperty } from "./inheritableProperty";
+import { property, inherit } from "./property";
 
 /**
  * A general component.
@@ -23,31 +22,8 @@ export abstract class Component extends HTMLElement {
         }
     }
     _shouldRender = false;
-    
-    @inheritableProperty()
-    animationDuration?: number;
 
-    get group(): Group | null {
-        if(this.parentElement instanceof Component) {
-            return this.parentElement.group;
-        } else {
-            return null;
-        }
-    }
-
-    runProcess(name: string, body: () => boolean, render = true) {
-        const group = this.group;
-        if(!group) {
-            console.error("This component is not within a group, so processes cannot be run.");
-            return;
-        }
-        group.processes.push({name, body: () => {
-            if(render) {
-                this.shouldRender = true;
-            }
-            return body();
-        }});
-    }
+    @property(inherit(null)) group!: Group | null;
 
     /**
      * All children of type

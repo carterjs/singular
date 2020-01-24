@@ -8,12 +8,12 @@ export class Point extends Component {
     /**
      * X value
      */
-    @property x = 0;
+    @property() x = 0;
 
     /**
      * Y value
      */
-    @property y = 0;
+    @property() y = 0;
 
     static get observedAttributes() {
         return [
