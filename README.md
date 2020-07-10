@@ -1,5 +1,5 @@
 # A Graphic
-A web component suite for displaying and animating vector graphics. Allows vector graphics to be rendered to the HTML5 canvas using a declarative, SVG-inspired syntax..
+A web component suite for displaying and animating vector graphics. Allows vector graphics to be rendered to the HTML5 canvas using a declarative, SVG-inspired syntax.
 
 This project is still a work in progress. I plan on finishing the animation features as soon as possible.
 
